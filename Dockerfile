@@ -1,8 +1,7 @@
 FROM alpine:3
 
-RUN apk add --no-cache chrony tzdata \
-    && rm -rf /var/cache/apk/*
+RUN apk add --no-cache chrony
 
 EXPOSE 123/udp
 
-ENTRYPOINT ["chronyd", "-d", "-s"]
+ENTRYPOINT ["chronyd", "-d", "-s", "-u", "chrony:chrony"]
