@@ -1,6 +1,7 @@
 FROM alpine:3
 
-RUN apk add --no-cache chrony
+RUN addgroup -S chrony && adduser -S -G chrony chrony \
+    && apk add --no-cache chrony
 
 EXPOSE 123/udp
 
