@@ -66,9 +66,8 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/sh
-            - -c
-            - chronyc tracking | grep -q "Leap status"
+            - chronyc
+            - tracking
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 5

@@ -24,9 +24,7 @@ services:
 volumes:
   chrony-data:
   chrony-run:
-    driver_opts:
-      type: tmpfs
-      device: tmpfs
+    driver: tmpfs
   chrony-log:
 
 networks:
