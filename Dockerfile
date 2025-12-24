@@ -4,4 +4,4 @@ RUN apk add --no-cache chrony
 
 EXPOSE 123/udp
 
-ENTRYPOINT ["chronyd", "-d", "-s"]
+ENTRYPOINT ["chronyd", "-d", "-s", "-u", "root"]
