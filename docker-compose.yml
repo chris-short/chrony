@@ -1,0 +1,29 @@
+# Chrony NTP Container
+#
+# External DNS Configuration:
+# Uses public DNS servers (Cloudflare 1.1.1.1, Google 8.8.8.8) to resolve
+# NTP server hostnames. This bypasses local DNS servers that may intercept
+# or redirect NTP traffic, ensuring reliable time synchronization from
+# intended upstream sources.
+
+services:
+  chrony:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chrony
+    restart: always
+    cap_add:
+      - SYS_TIME
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    ports:
+      - "123:123/udp"
+    volumes:
+      - chrony-data:/var/lib/chrony
+      - chrony-logs:/var/log/chrony
+
+volumes:
+  chrony-data:
+  chrony-logs:
