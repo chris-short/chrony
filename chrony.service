@@ -1,0 +1,24 @@
+[Unit]
+Description=Uptime Kuma
+Documentation=man:podman-generate-systemd(1)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/home/cbshort/repo/chrony
+User=cbshort
+Group=cbshort
+
+# Add debug logging
+Environment=PODMAN_LOG_LEVEL=debug
+
+ExecStartPre=/usr/bin/podman-compose pull
+ExecStart=/usr/bin/podman-compose -f docker-compose.yaml up -d --force-recreate
+ExecStop=/usr/bin/podman-compose -f docker-compose.yaml down
+
+[Install]
+WantedBy=multi-user.target
