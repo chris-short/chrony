@@ -64,6 +64,40 @@ podman generate systemd --new --name chrony > ~/.config/systemd/user/chrony.serv
 systemctl --user enable --now chrony
 ```
 
+### Docker with systemd
+
+Create `/etc/systemd/system/chrony-container.service`:
+
+```ini
+[Unit]
+Description=Chrony NTP Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f chrony
+ExecStart=/usr/bin/docker run --rm --name chrony \
+  --cap-drop ALL \
+  --cap-add SYS_TIME \
+  --dns 1.1.1.1 \
+  --dns 8.8.8.8 \
+  -p 123:123/udp \
+  -v chrony-data:/var/lib/chrony \
+  ghcr.io/chris-short/chrony:latest
+ExecStop=/usr/bin/docker stop chrony
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now chrony-container
+```
+
 ## Configuration
 
 ### Custom NTP Servers
