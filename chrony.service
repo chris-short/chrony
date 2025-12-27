@@ -1,5 +1,5 @@
 [Unit]
-Description=Uptime Kuma
+Description=Chrony
 Documentation=man:podman-generate-systemd(1)
 After=network-online.target
 Wants=network-online.target
