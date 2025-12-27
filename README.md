@@ -20,7 +20,7 @@ This container has been tested and verified on:
 - **RTC-free operation**: Optimized configuration for devices without hardware clocks
 - **Fast sync on boot**: Uses `makestep` to quickly correct time after restart
 - **Drift tracking**: Maintains accuracy across reboots via persistent drift file
-- **External DNS**: Configured to use public DNS servers (1.1.1.1, 8.8.8.8) for reliable NTP server resolution
+- **Host networking**: Binds directly to host interfaces for reliable IPv4/IPv6 NTP service
 - **Custom NTP servers**: Includes local and public time sources for redundancy
 
 ## Quick Start
@@ -39,20 +39,16 @@ docker build -t chrony:latest .
 
 # Run with minimal configuration
 docker run -d --name chrony \
+  --network host \
   --cap-add SYS_TIME \
-  --dns 1.1.1.1 \
-  --dns 8.8.8.8 \
-  -p 123:123/udp \
   chrony:latest
 
 # Run with persistent drift/logs
 docker run -d --name chrony \
+  --network host \
+  --cap-add SYS_TIME \
   -v chrony-data:/var/lib/chrony \
   -v chrony-logs:/var/log/chrony \
-  --cap-add SYS_TIME \
-  --dns 1.1.1.1 \
-  --dns 8.8.8.8 \
-  -p 123:123/udp \
   chrony:latest
 ```
 
@@ -78,11 +74,9 @@ Requires=docker.service
 Restart=always
 ExecStartPre=-/usr/bin/docker rm -f chrony
 ExecStart=/usr/bin/docker run --rm --name chrony \
+  --network host \
   --cap-drop ALL \
   --cap-add SYS_TIME \
-  --dns 1.1.1.1 \
-  --dns 8.8.8.8 \
-  -p 123:123/udp \
   -v chrony-data:/var/lib/chrony \
   ghcr.io/chris-short/chrony:latest
 ExecStop=/usr/bin/docker stop chrony
