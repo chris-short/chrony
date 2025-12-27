@@ -64,7 +64,7 @@ jobs:
           sbom: true
           provenance: mode=max
           build-args: |
-            BUILD_DATE=${{ github.event.repository.updated_at }}
+            BUILD_DATE=${{ github.run_started_at }}
             VCS_REF=${{ github.sha }}
             VERSION=${{ github.ref_name }}
 
