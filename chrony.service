@@ -1,24 +1,31 @@
 [Unit]
-Description=Chrony
-Documentation=man:podman-generate-systemd(1)
+Description=Chrony NTP Container
+Documentation=https://github.com/chris-short/chrony
 After=network-online.target
 Wants=network-online.target
 StartLimitIntervalSec=60
 StartLimitBurst=3
 
 [Service]
-Type=oneshot
-RemainAfterExit=true
+Type=simple
 WorkingDirectory=/home/cbshort/repo/chrony
 User=cbshort
 Group=cbshort
 
-# Add debug logging
-Environment=PODMAN_LOG_LEVEL=debug
+ExecStartPre=-/usr/bin/podman stop -t 10 chrony
+ExecStartPre=-/usr/bin/podman rm chrony
+ExecStartPre=/usr/bin/podman pull ghcr.io/chris-short/chrony:latest
+ExecStart=/usr/bin/podman run --name=chrony \
+    --network=host \
+    --cap-add=SYS_TIME \
+    -v chrony-data:/var/lib/chrony \
+    -v chrony-logs:/var/log/chrony \
+    ghcr.io/chris-short/chrony:latest
+ExecStop=/usr/bin/podman stop -t 10 chrony
+ExecStopPost=-/usr/bin/podman rm chrony
 
-ExecStartPre=/usr/bin/podman-compose pull
-ExecStart=/usr/bin/podman-compose -f docker-compose.yaml up -d --force-recreate
-ExecStop=/usr/bin/podman-compose -f docker-compose.yaml down
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
