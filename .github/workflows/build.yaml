@@ -19,6 +19,7 @@ jobs:
       packages: write
       id-token: write      # Needed for OIDC/keyless signing
       attestations: write  # Needed for provenance attestations
+      security-events: write  # Needed for uploading SARIF results
 
     steps:
       - name: Checkout
