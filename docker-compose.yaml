@@ -2,6 +2,9 @@
 #
 # Uses host networking mode to bind directly to the host's network interfaces,
 # ensuring NTP service is available on both IPv4 and IPv6.
+#
+# Note: dns/dns_search options are ignored with network_mode: host
+# as the container uses the host's network stack directly.
 
 services:
   chrony:
@@ -14,6 +17,7 @@ services:
     volumes:
       - chrony-data:/var/lib/chrony
       - chrony-logs:/var/log/chrony
+      - ./chrony.conf:/etc/chrony/chrony.conf:ro
 
 volumes:
   chrony-data:

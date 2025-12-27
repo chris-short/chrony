@@ -7,22 +7,15 @@ StartLimitIntervalSec=60
 StartLimitBurst=3
 
 [Service]
-Type=simple
+Type=oneshot
+RemainAfterExit=true
 WorkingDirectory=/home/cbshort/repo/chrony
 User=cbshort
 Group=cbshort
 
-ExecStartPre=-/usr/bin/podman stop -t 10 chrony
-ExecStartPre=-/usr/bin/podman rm chrony
-ExecStartPre=/usr/bin/podman pull ghcr.io/chris-short/chrony:latest
-ExecStart=/usr/bin/podman run --name=chrony \
-    --network=host \
-    --cap-add=SYS_TIME \
-    -v chrony-data:/var/lib/chrony \
-    -v chrony-logs:/var/log/chrony \
-    ghcr.io/chris-short/chrony:latest
-ExecStop=/usr/bin/podman stop -t 10 chrony
-ExecStopPost=-/usr/bin/podman rm chrony
+ExecStartPre=/home/cbshort/.local/bin/podman-compose pull
+ExecStart=/home/cbshort/.local/bin/podman-compose up -d --force-recreate
+ExecStop=/home/cbshort/.local/bin/podman-compose down
 
 Restart=on-failure
 RestartSec=10
