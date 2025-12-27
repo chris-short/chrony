@@ -17,7 +17,7 @@ services:
       - 1.1.1.1
       - 8.8.8.8
     ports:
-      - "123:123/udp"
+      - "0.0.0.0:123:123/udp"
     volumes:
       - chrony-data:/var/lib/chrony
       - chrony-logs:/var/log/chrony
