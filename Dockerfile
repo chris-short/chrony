@@ -21,9 +21,12 @@ LABEL org.opencontainers.image.created=$BUILD_DATE
 LABEL org.opencontainers.image.revision=$VCS_REF
 LABEL org.opencontainers.image.version=$VERSION
 
+# Cache-bust argument to ensure fresh packages on each build
+ARG CACHE_BUST
 
-# Install chrony
-RUN apk add --no-cache chrony
+# Install chrony and apply all available security patches
+RUN apk upgrade --no-cache && \
+    apk add --no-cache chrony
 
 # Create necessary directories for chrony runtime data
 RUN mkdir -p /var/lib/chrony /var/log/chrony /run/chrony && \
