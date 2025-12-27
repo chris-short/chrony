@@ -18,3 +18,9 @@ services:
 volumes:
   chrony-data:
   chrony-logs:
+
+# Disable default network creation for podman-compose compatibility
+networks:
+  default:
+    name: host
+    external: true
