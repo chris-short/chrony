@@ -14,6 +14,9 @@ services:
     network_mode: host
     cap_add:
       - SYS_TIME
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     volumes:
       - chrony-data:/var/lib/chrony
       - chrony-logs:/var/log/chrony

@@ -12,18 +12,10 @@ WorkingDirectory=/home/cbshort/repo/chrony
 User=cbshort
 Group=cbshort
 
-ExecStartPre=-/usr/bin/podman stop -t 10 chrony
-ExecStartPre=-/usr/bin/podman rm chrony
-ExecStartPre=/usr/bin/podman pull ghcr.io/chris-short/chrony:latest
-ExecStart=/usr/bin/podman run --name=chrony \
-    --network=host \
-    --cap-add=SYS_TIME \
-    -v chrony-data:/var/lib/chrony \
-    -v chrony-logs:/var/log/chrony \
-    -v /home/cbshort/repo/chrony/chrony.conf:/etc/chrony/chrony.conf:ro \
-    ghcr.io/chris-short/chrony:latest
-ExecStop=/usr/bin/podman stop -t 10 chrony
-ExecStopPost=-/usr/bin/podman rm chrony
+ExecStartPre=-/usr/bin/podman-compose down
+ExecStartPre=/usr/bin/podman-compose pull
+ExecStart=/usr/bin/podman-compose up --force-recreate
+ExecStop=/usr/bin/podman-compose down
 
 Restart=on-failure
 RestartSec=10
